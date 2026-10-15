@@ -36,7 +36,7 @@ export async function saveBuildToCart(req: Request, res: Response) {
     if (value) {
       const quantity = 1;
       const products = await productService.listProducts({ category_id: c.category_id });
-      if (!Number.isSafeInteger(quantity) || quantity < 1 || !products.some(p => p.product_id === Number(value))) return res.status(400).send('Invalid component or quantity');
+      if (!Number.isSafeInteger(quantity) || quantity < 1 || !products.some(p => p.product_id === Number(value))) return res.status(400).send(res.locals.t('ข้อมูลอะไหล่หรือจำนวนไม่ถูกต้อง'));
       items.push({ product_id: Number(value), quantity });
     }
   }
@@ -53,7 +53,7 @@ export async function saveBuildToCart(req: Request, res: Response) {
 
 export async function showBuildStatus(req: Request, res: Response) {
   const build = await buildService.getBuildById(Number(req.params.id));
-  if (!build || build.customer_id !== req.customer!.customer_id) return res.status(404).send('Not found');
+  if (!build || build.customer_id !== req.customer!.customer_id) return res.status(404).send(res.locals.t('ไม่พบข้อมูล'));
   const shipment = await shipmentService.getShipmentForBuild(build.build_id);
   const items = await buildService.getBuildItems(build.build_id);
   const history = build ? await buildService.getBuildHistory(build.build_id) : [];
